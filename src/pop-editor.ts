@@ -2,6 +2,7 @@ import { LitElement, css, html } from "lit";
 import interact from 'interactjs'
 import { customElement, property, state } from "lit/decorators.js";
 import { PDFDocumentProxy, GlobalWorkerOptions, getDocument } from "pdfjs-dist";
+import { degrees, PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 
 
 @customElement('pop-editor')
@@ -129,11 +130,57 @@ class PopEditor extends LitElement {
       })
   };
 
+  getCoordinates() {
+    return {
+      x: this.position.x,
+      y: this.position.y,
+    }
+  }
+
+  async modifyPdf() {
+    const url = this.url;
+    const existingPdfBytes = await fetch(url).then(res => res.arrayBuffer());
+  
+    const pdfDoc = await PDFDocument.load(existingPdfBytes);
+    const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
+    
+    const pos = this.getCoordinates();
+    const pages = pdfDoc.getPages();
+    const firstPage = pages[0];
+    const { width, height } = firstPage.getSize()
+    firstPage.drawText('This text was added with JavaScript!', {
+      x: pos.x,
+      y: pos.y,
+      size: 11,
+      font: helveticaFont,
+      color: rgb(0.95, 0.1, 0.1),
+      // rotate: degrees(-45),
+    })
+  
+    const pdfBytes = await pdfDoc.save()
+    return pdfBytes;
+  }
+
+  private async _download(e: Event) {
+    const data = await this.modifyPdf();
+    const blob = new Blob([data]);
+
+    if (this.shadowRoot) {
+      const a = document.createElement('a');
+      this.shadowRoot.append(a);
+      a.download = 'abc.pdf';
+      a.href = URL.createObjectURL(blob);
+      a.click();
+      a.remove();
+    }
+  }
+
   // Render the UI as a function of component state
   render() {
     return html`
       <div class="draggable"></div>
       <canvas id="the-canvas"></canvas>
+      <button @click="${this._download}">Download</button>
     `;
   }
 }
