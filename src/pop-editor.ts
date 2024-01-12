@@ -1,4 +1,5 @@
 import { LitElement, css, html } from "lit";
+import interact from 'interactjs'
 import { customElement, property, state } from "lit/decorators.js";
 import { PDFDocumentProxy, GlobalWorkerOptions, getDocument } from "pdfjs-dist";
 
@@ -7,7 +8,21 @@ import { PDFDocumentProxy, GlobalWorkerOptions, getDocument } from "pdfjs-dist";
 class PopEditor extends LitElement {
   static styles = css`
   :host {
-    display: block;
+    display: block; 
+    margin: 0;
+    padding: 0;
+  }
+
+  .draggable {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background-color: #29e;
+    color: white;
+  }
+
+  #the-canvas {
+    border: 1px solid black;
   }
   `
 
@@ -29,6 +44,7 @@ class PopEditor extends LitElement {
   pages = [];
   
   @state() isInitialised = false;
+  @state() position = { x: 0, y: 0 }
 
   readonly minScale = 1.0;
   readonly maxScale = 2.3;
@@ -72,6 +88,21 @@ class PopEditor extends LitElement {
       // Wait for rendering to finish
       renderTask.promise.then(() => {
         console.log('Page rendered')
+
+        interact('.draggable').draggable({
+          listeners: {
+            start: (event) => {
+              console.log(event.type, event.target)
+            },
+            move: (event) => {
+              this.position.x += event.dx
+              this.position.y += event.dy
+        
+              event.target.style.transform =
+                `translate(${this.position.x}px, ${this.position.y}px)`
+            },
+          }
+        })
       });
     });
   };
@@ -101,6 +132,7 @@ class PopEditor extends LitElement {
   // Render the UI as a function of component state
   render() {
     return html`
+      <div class="draggable"></div>
       <canvas id="the-canvas"></canvas>
     `;
   }

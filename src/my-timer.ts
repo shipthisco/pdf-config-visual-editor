@@ -18,7 +18,7 @@ export class MyTimer extends LitElement {
     }
   `;
 
-  @property() duration = 60;
+  @property({type: Number}) duration = 60;
   @state() private end: number | null = null;
   @state() private remaining = 0;
 
