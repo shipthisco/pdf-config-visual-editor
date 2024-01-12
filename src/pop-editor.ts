@@ -1,7 +1,7 @@
 import { LitElement, css, html } from "lit";
 import interact from 'interactjs'
 import { customElement, property, state } from "lit/decorators.js";
-import { PDFDocumentProxy, GlobalWorkerOptions, getDocument } from "pdfjs-dist";
+import { PDFDocumentProxy, GlobalWorkerOptions, getDocument, PageViewport } from "pdfjs-dist";
 import { degrees, PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 
 
@@ -29,6 +29,7 @@ class PopEditor extends LitElement {
 
   @property() url: string = '';
   @property({type: Number}) scale = 1;
+  @property({type: Number}) rotation = 0;
   @property({type: Number}) pageNum = 1; //must be number
 
   @property({type: Number}) totalPage = 0;
@@ -45,7 +46,8 @@ class PopEditor extends LitElement {
   pages = [];
   
   @state() isInitialised = false;
-  @state() position = { x: 0, y: 0 }
+  @state() position = { x: 0, y: 0 };
+  @state() viewport: PageViewport | undefined;
 
   readonly minScale = 1.0;
   readonly maxScale = 2.3;
@@ -70,7 +72,8 @@ class PopEditor extends LitElement {
     }
 
     this.pdfDoc.getPage(num).then((page) => {
-      const viewport = page.getViewport({ scale: this.scale, rotation: this.rotation });
+      this.viewport = page.getViewport({ scale: this.scale, rotation: this.rotation });
+      const viewport = this.viewport;
       if (!this.shadowRoot) {
         return;
       }
@@ -131,10 +134,16 @@ class PopEditor extends LitElement {
   };
 
   getCoordinates() {
-    return {
+    const pos = {
       x: this.position.x,
       y: this.position.y,
     }
+    if (this.viewport?.viewBox?.length > 0) {
+      const [x, y, width, height] = this.viewport?.viewBox;
+      pos.y = height - ((pos.y * height) / this.viewport?.height);
+      pos.x = (pos.x * width) / this.viewport?.width;
+    }
+    return pos
   }
 
   async modifyPdf() {
@@ -148,6 +157,7 @@ class PopEditor extends LitElement {
     const pages = pdfDoc.getPages();
     const firstPage = pages[0];
     const { width, height } = firstPage.getSize()
+
     firstPage.drawText('This text was added with JavaScript!', {
       x: pos.x,
       y: pos.y,
