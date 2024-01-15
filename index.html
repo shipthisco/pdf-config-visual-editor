@@ -7,16 +7,37 @@
     <title>Vite + Lit + TS</title>
     <link rel="stylesheet" href="./src/index.css" />
     <script type="module" src="/src/pop-editor.ts"></script>
+    <script type="module" src="/src/pdf-viewer.ts"></script>
     <script type="module" src="/src/my-timer.ts"></script>
     <style>
       body {
         margin: 0;
         padding: 0;
+        
+        display: flex;
       }
     </style>
   </head>
   <body>
     <!-- <my-timer duration="300"></my-timer> -->
-    <pop-editor url="https://raw.githubusercontent.com/vinodnimbalkar/svelte-pdf/369db2f9edbf5ab8c87184193e1404340729bb3a/public/sample.pdf"></pop-editor>
+    <pop-editor 
+      id="one"
+      url="https://raw.githubusercontent.com/vinodnimbalkar/svelte-pdf/369db2f9edbf5ab8c87184193e1404340729bb3a/public/sample.pdf"
+    ></pop-editor>
   </body>
+    
+    
+  <script>
+    document.querySelector('#one').addEventListener('modified', (event) => {
+      const result = document.querySelector("#result");
+      if (result) {
+        document.body.removeChild(result);
+      }
+
+      const popEditor = document.createElement('pdf-viewer');
+      popEditor.setAttribute("id", "result");
+      popEditor.setAttribute("data", event.detail.data);
+      document.body.appendChild(popEditor)
+    })
+  </script>
 </html>
