@@ -24,7 +24,7 @@ export class ObjectEntry extends LitElement {
     const name = this._input.value;
     this._input.value = '';
     this._submitEnabled = false;
-    this.entries.push(name);
+    this.entries.push(name );
   }
 
   _inputChanged(e: Event) {
