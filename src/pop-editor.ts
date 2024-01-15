@@ -205,6 +205,8 @@ class PopEditor extends LitElement {
       <canvas id="the-canvas"></canvas>
       <button @click="${this._download}">Download</button>
       <button @click="${this._display}">Display</button>
+
+      <object-entry></object-entry>
     `;
   }
 }
