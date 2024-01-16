@@ -29,7 +29,7 @@ class PopEditor extends LitElement {
 
   @property() data: any;
   @property() url: string = '';
-  @property({type: Array}) fields: string[] = [];
+  @property({type: Array}) fields: string[] = ['abc'];
 
   @property({type: Number}) scale = 1;
   @property({type: Number}) rotation = 0;
@@ -49,6 +49,7 @@ class PopEditor extends LitElement {
   
   @state() isInitialised = false;
   @state() position = { x: 0, y: 0 };
+  @state() positions: Record<string, {x: number, y: number}> = {};
   @state() viewport: PageViewport | undefined;
 
   readonly minScale = 1.0;
@@ -58,13 +59,15 @@ class PopEditor extends LitElement {
     super();
     GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.0.379/build/pdf.worker.mjs';
   }
-
+  
   connectedCallback(): void {
     super.connectedCallback()
     this.initialLoad();
   }
-
+  
   renderPage(num: number) {
+    console.log(this.fields)
+    console.log(this.url)
     this.pageRendering = true;
     // Using promise to fetch the page
     console.log('rendering...');
@@ -95,7 +98,10 @@ class PopEditor extends LitElement {
       renderTask.promise.then(() => {
         console.log('Page rendered')
         
-        this.dragField('draggable')
+        this.fields.forEach((field) => {
+          this.positions[field] = JSON.parse(JSON.stringify(this.position));
+          this.dragField(field)
+        });
       });
     });
   };
@@ -107,11 +113,11 @@ class PopEditor extends LitElement {
           console.log(event.type, event.target)
         },
         move: (event) => {
-          this.position.x += event.dx
-          this.position.y += event.dy
+          this.positions[className].x += event.dx
+          this.positions[className].y += event.dy
     
           event.target.style.transform =
-            `translate(${this.position.x}px, ${this.position.y}px)`
+            `translate(${this.positions[className].x}px, ${this.positions[className].y}px)`
         },
       }
     })
@@ -206,7 +212,9 @@ class PopEditor extends LitElement {
   // Render the UI as a function of component state
   render() {
     return html`
-      <div class="draggable"></div>
+      ${
+        this.fields.map((field) => html`<div class="draggable ${field}"></div>`)
+      }
       <canvas id="the-canvas"></canvas>
       <button @click="${this._download}">Download</button>
       <button @click="${this._display}">Display</button>
