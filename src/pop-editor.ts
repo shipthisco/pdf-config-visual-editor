@@ -229,7 +229,7 @@ class PopEditor extends LitElement {
       firstPage.drawText('This text was added with JavaScript!', {
         x: this.configNodes[field].position.x,
         y: this.configNodes[field].position.y,
-        size: 11,
+        size: this.configNodes[field].fontSize,
         font: helveticaFont,
         color: rgb(0.95, 0.1, 0.1),
         // rotate: degrees(-45),
@@ -342,7 +342,7 @@ class PopEditor extends LitElement {
     if (!this.shadowRoot) return;
     const input = this.shadowRoot.querySelector<HTMLInputElement>('.context-menu .action input');
     if (!input) return;
-    this.selectedConfigNode['fontSize'] = input.value;
+    this.selectedConfigNode['fontSize'] = +input.value;
 
     const menu = this.shadowRoot.querySelector<HTMLElement>('.context-menu');
     if (!menu) return;
