@@ -16,10 +16,12 @@ class PopEditor extends LitElement {
 
   .draggable {
     position: absolute;
-    width: 30px;
-    height: 30px;
-    background-color: #29e;
-    color: white;
+    /* width: 30px;
+    height: 30px; */
+    padding-left: 0.25rem;
+    border-top: 1px solid #29e;
+    border-left: 1px solid #29e;
+    color: #29e;
   }
 
   #the-canvas {
@@ -52,6 +54,9 @@ class PopEditor extends LitElement {
     display: block;
     /* background: gainsboro; */
   }
+  .context-menu .action {
+    display: none;
+  }
   `
 
   @property() data: any;
@@ -67,6 +72,8 @@ class PopEditor extends LitElement {
   hostClientWidth: number | undefined;
 
   configNodes: any = {};
+  selectedConfigNode: any = {};
+  selectedAction: string = '';
 
   canvas: any;
   page_num = 0;
@@ -273,10 +280,8 @@ class PopEditor extends LitElement {
 
   _dragBoxContextMenu(e: PointerEvent, field: string) {
     e.preventDefault();
-    console.log(this.configNodes)
-    console.log(field)
-    const fieldConfig = this.configNodes[field];
-    console.log(fieldConfig);
+
+    this.selectedConfigNode = this.configNodes[field];
 
     if (!this.shadowRoot) return;
     const menu = this.shadowRoot.querySelector<HTMLElement>('.context-menu');
@@ -318,28 +323,64 @@ class PopEditor extends LitElement {
     menu.style['display'] = "none";
   }
 
+  _contextSetFont(e: PointerEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!this.shadowRoot) return;
+    const action = this.shadowRoot.querySelector<HTMLElement>('.context-menu .action');
+    if (!action) return;
+    
+    const input = action.querySelector('input');
+    if (!input) return;
+    input.value = this.selectedConfigNode.fontSize;
+    action.style['display'] =  "block"
+  }
+
+  _set(e: Event) {
+    console.log(e)
+    if (!this.shadowRoot) return;
+    const input = this.shadowRoot.querySelector<HTMLInputElement>('.context-menu .action input');
+    if (!input) return;
+    this.selectedConfigNode['fontSize'] = input.value;
+
+    const menu = this.shadowRoot.querySelector<HTMLElement>('.context-menu');
+    if (!menu) return;
+    menu.style['display'] = "none";
+    // this._closeContextMenu(e);
+  }
+
   // Render the UI as a function of component state
   render() {
     return html`
       <div class="context-menu">
         <div class="menu-items">
           <button @click=${this._closeContextMenu}> Close </button>
-          <button class="menu-item">Set Font Size</button>
+          <button class="menu-item" @click="${this._contextSetFont}">Set Font Size</button>
+          <button class="menu-item">Set Remove</button>
           <button class="menu-item">Set Color</button>
+          <button class="menu-item">Set Multi</button>
           <button class="menu-item">Set more attributes</button>
+        </div>
+
+        <div class="action">
+          <input >
+          <button @click="${this._set}">Set</button>
         </div>
       </div>
 
       ${
         this.fields.map((field) => html`
-          <div class="draggable ${field}" @contextmenu=${{handleEvent: (e) => this._dragBoxContextMenu(e, field)}}></div>
+          <div class="draggable ${field}" @contextmenu=${{handleEvent: (e) => this._dragBoxContextMenu(e, field)}}>
+          ${field}
+          </div>
         `)
       }
       <canvas id="the-canvas"></canvas>
       <button @click="${this._download}">Download</button>
       <button @click="${this._display}">Display</button>
       <button @click="${this._generateConfig}">Generate Config</button>
-
+      
     `;
   }
 }
