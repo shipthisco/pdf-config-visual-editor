@@ -25,6 +25,15 @@ class PopEditor extends LitElement {
   #the-canvas {
     border: 1px solid black;
   }
+
+  .context-menu {
+    display: none;
+    position: absolute;
+    z-index: 10;
+  }
+  .context-menu--active {
+    /* display: block; */
+  }
   `
 
   @property() data: any;
@@ -208,15 +217,80 @@ class PopEditor extends LitElement {
     }
   }
 
+  private _generateConfig(e: Event) {
+    const nodes = []
+    for (const field of this.fields) {
+      const pos = this.getCoordinates(JSON.parse(JSON.stringify(this.positions[field])));
+      nodes.push({
+        key: field,
+        type: 'text',
+        fontSize: 9,
+        position: pos
+      })
+    }
+    // console.log(nodes)
+    const options = {
+      detail: {nodes},
+      bubbles: true,
+      composed: true
+    };
+    this.dispatchEvent(new CustomEvent('pdfConfig', options));
+  }
+
+  _dragBoxContextMenu(e: PointerEvent) {
+    e.preventDefault();
+    console.log(e);
+    if (!this.shadowRoot) return;
+    const menu = this.shadowRoot.querySelector<HTMLElement>('.context-menu');
+    if (!menu) return;
+
+    menu.style['display'] = "block";
+    menu.style['position'] = "absolute";
+    
+    const menuPosition = this.getPosition(e);
+    menu.style['top'] = menuPosition.y + "px";
+    menu.style['left'] = menuPosition.x + "px";
+    this.requestUpdate();
+    
+  }
+
+  getPosition(e: PointerEvent) {
+    let posX = 0;
+    let posY = 0;
+    if (!e) e = window.event;
+    if (e.pageX || e.pageY) {
+      posX = e.pageX;
+      posY = e.pageY;
+    } else if (e.clientX || e.clientY) {
+      posX = e.clientX + document.body.scrollLeft + 
+        document.documentElement.scrollLeft;
+      posY = e.clientY + document.body.scrollTop +
+        document.documentElement.scrollTop;
+    }
+    return {
+      x: posX,
+      y: posY
+    }
+  }
+
   // Render the UI as a function of component state
   render() {
     return html`
+      <div class="context-menu">
+        <ul>
+          <li>Task1</li>
+        </ul>
+      </div>
+
       ${
-        this.fields.map((field) => html`<div class="draggable ${field}"></div>`)
+        this.fields.map((field) => html`
+          <div class="draggable ${field}" @contextmenu=${this._dragBoxContextMenu}></div>
+        `)
       }
       <canvas id="the-canvas"></canvas>
       <button @click="${this._download}">Download</button>
       <button @click="${this._display}">Display</button>
+      <button @click="${this._generateConfig}">Generate Config</button>
 
     `;
   }

@@ -48,5 +48,9 @@
       popEditor.setAttribute("data", event.detail.data);
       main.appendChild(popEditor)
     })
+
+    document.querySelector('#one').addEventListener('pdfConfig', (event) => {
+      console.log(event.detail)
+    });
   </script>
 </html>
