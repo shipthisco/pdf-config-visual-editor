@@ -30,9 +30,27 @@ class PopEditor extends LitElement {
     display: none;
     position: absolute;
     z-index: 10;
+    border: 1px solid black;
+    background-color: white;
+    border-radius: 4px;
   }
-  .context-menu--active {
-    /* display: block; */
+  .menu-items {
+    display: flex;
+    flex-direction: column;
+    border-radius: 4px;
+  }
+  .menu-item {
+    padding: .5rem;
+  }
+  .menu-item:hover {
+    border-radius: 4px;
+    background-color: black;
+    color: white;
+  }
+  .context-menu button {
+    all: unset;
+    display: block;
+    /* background: gainsboro; */
   }
   `
 
@@ -47,6 +65,8 @@ class PopEditor extends LitElement {
 
   hostClientHeight: number | undefined;
   hostClientWidth: number | undefined;
+
+  configNodes: any = {};
 
   canvas: any;
   page_num = 0;
@@ -67,16 +87,33 @@ class PopEditor extends LitElement {
   constructor() {
     super();
     GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.0.379/build/pdf.worker.mjs';
+    
+    window.addEventListener('keyup', (e: KeyboardEvent) => {
+      if (e.code === 'Escape') {
+        this._closeContextMenu(e);
+      }
+    });
   }
   
   connectedCallback(): void {
     super.connectedCallback()
     this.initialLoad();
+
+    this.fields.forEach((field) => {
+      this.configNodes[field] = {
+        "key": field,
+        "type": "text",
+        "fontSize": 9,
+        "fontFamily": "courier",
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+      }
+    })
   }
   
   renderPage(num: number) {
-    console.log(this.fields)
-    console.log(this.url)
     this.pageRendering = true;
     // Using promise to fetch the page
     console.log('rendering...');
@@ -128,6 +165,10 @@ class PopEditor extends LitElement {
           event.target.style.transform =
             `translate(${this.positions[className].x}px, ${this.positions[className].y}px)`
         },
+        end: (event) => {
+          const pos = this.getCoordinates(JSON.parse(JSON.stringify(this.positions[className])));
+          this.configNodes[className]['position'] = pos;
+        }
       }
     })
   }
@@ -177,10 +218,10 @@ class PopEditor extends LitElement {
     const { width, height } = firstPage.getSize()
     
     for (const field of this.fields) {
-      const pos = this.getCoordinates(JSON.parse(JSON.stringify(this.positions[field])));
+      // const pos = this.getCoordinates(JSON.parse(JSON.stringify(this.positions[field])));
       firstPage.drawText('This text was added with JavaScript!', {
-        x: pos.x,
-        y: pos.y,
+        x: this.configNodes[field].position.x,
+        y: this.configNodes[field].position.y,
         size: 11,
         font: helveticaFont,
         color: rgb(0.95, 0.1, 0.1),
@@ -220,15 +261,8 @@ class PopEditor extends LitElement {
   private _generateConfig(e: Event) {
     const nodes = []
     for (const field of this.fields) {
-      const pos = this.getCoordinates(JSON.parse(JSON.stringify(this.positions[field])));
-      nodes.push({
-        key: field,
-        type: 'text',
-        fontSize: 9,
-        position: pos
-      })
+      nodes.push(this.configNodes[field])
     }
-    // console.log(nodes)
     const options = {
       detail: {nodes},
       bubbles: true,
@@ -237,9 +271,13 @@ class PopEditor extends LitElement {
     this.dispatchEvent(new CustomEvent('pdfConfig', options));
   }
 
-  _dragBoxContextMenu(e: PointerEvent) {
+  _dragBoxContextMenu(e: PointerEvent, field: string) {
     e.preventDefault();
-    console.log(e);
+    console.log(this.configNodes)
+    console.log(field)
+    const fieldConfig = this.configNodes[field];
+    console.log(fieldConfig);
+
     if (!this.shadowRoot) return;
     const menu = this.shadowRoot.querySelector<HTMLElement>('.context-menu');
     if (!menu) return;
@@ -273,18 +311,28 @@ class PopEditor extends LitElement {
     }
   }
 
+  _closeContextMenu(e: Event) {
+    if (!this.shadowRoot) return;
+    const menu = this.shadowRoot.querySelector<HTMLElement>('.context-menu');
+    if (!menu) return;
+    menu.style['display'] = "none";
+  }
+
   // Render the UI as a function of component state
   render() {
     return html`
       <div class="context-menu">
-        <ul>
-          <li>Task1</li>
-        </ul>
+        <div class="menu-items">
+          <button @click=${this._closeContextMenu}> Close </button>
+          <button class="menu-item">Set Font Size</button>
+          <button class="menu-item">Set Color</button>
+          <button class="menu-item">Set more attributes</button>
+        </div>
       </div>
 
       ${
         this.fields.map((field) => html`
-          <div class="draggable ${field}" @contextmenu=${this._dragBoxContextMenu}></div>
+          <div class="draggable ${field}" @contextmenu=${{handleEvent: (e) => this._dragBoxContextMenu(e, field)}}></div>
         `)
       }
       <canvas id="the-canvas"></canvas>
