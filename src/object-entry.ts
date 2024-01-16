@@ -33,6 +33,7 @@ export class ObjectEntry extends LitElement {
 
   _removeEntry(index: number) {
     this.entries.splice(index, 1);
+    this.requestUpdate();
   }
 
   render() {
@@ -44,10 +45,6 @@ export class ObjectEntry extends LitElement {
         <button> - </button>
       </div>
       <ul>
-        <!-- ${this.entries.map((entry) =>
-          html`<li>${entry}</li>`
-        )} -->
-        
         ${
           repeat(this.entries, (entry) => entry, (entry, index) => {
             return html`<li>${entry} <button @click="${{handleEvent: () => this._removeEntry(index)}}"> - </button> </li>`

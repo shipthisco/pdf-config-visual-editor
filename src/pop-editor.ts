@@ -2,7 +2,7 @@ import { LitElement, css, html } from "lit";
 import interact from 'interactjs'
 import { customElement, property, state } from "lit/decorators.js";
 import { PDFDocumentProxy, GlobalWorkerOptions, getDocument, PageViewport } from "pdfjs-dist";
-import { degrees, PDFDocument, rgb, StandardFonts } from 'pdf-lib';
+import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 
 
 @customElement('pop-editor')
@@ -29,10 +29,11 @@ class PopEditor extends LitElement {
 
   @property() data: any;
   @property() url: string = '';
+  @property({type: Array}) fields: string[] = [];
+
   @property({type: Number}) scale = 1;
   @property({type: Number}) rotation = 0;
   @property({type: Number}) pageNum = 1; //must be number
-
   @property({type: Number}) totalPage = 0;
 
   hostClientHeight: number | undefined;
@@ -93,24 +94,28 @@ class PopEditor extends LitElement {
       // Wait for rendering to finish
       renderTask.promise.then(() => {
         console.log('Page rendered')
-
-        interact('.draggable').draggable({
-          listeners: {
-            start: (event) => {
-              console.log(event.type, event.target)
-            },
-            move: (event) => {
-              this.position.x += event.dx
-              this.position.y += event.dy
         
-              event.target.style.transform =
-                `translate(${this.position.x}px, ${this.position.y}px)`
-            },
-          }
-        })
+        this.dragField('draggable')
       });
     });
   };
+
+  dragField(className: string) {
+    interact(`.${className}`).draggable({
+      listeners: {
+        start: (event) => {
+          console.log(event.type, event.target)
+        },
+        move: (event) => {
+          this.position.x += event.dx
+          this.position.y += event.dy
+    
+          event.target.style.transform =
+            `translate(${this.position.x}px, ${this.position.y}px)`
+        },
+      }
+    })
+  }
 
   queueRenderPage(num: number) {
     if (this.pageRendering) {
@@ -142,7 +147,7 @@ class PopEditor extends LitElement {
     }
     if (this.viewport?.viewBox?.length > 0) {
       const [x, y, width, height] = this.viewport?.viewBox;
-      pos.y = height - ((pos.y * height) / this.viewport?.height);
+      pos.y = (height - ((pos.y * height) / this.viewport?.height)) - 10;
       pos.x = (pos.x * width) / this.viewport?.width;
     }
     return pos
@@ -206,7 +211,6 @@ class PopEditor extends LitElement {
       <button @click="${this._download}">Download</button>
       <button @click="${this._display}">Display</button>
 
-      <object-entry></object-entry>
     `;
   }
 }

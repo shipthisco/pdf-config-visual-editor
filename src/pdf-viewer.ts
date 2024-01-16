@@ -4,7 +4,7 @@ import { PDFDocumentProxy, GlobalWorkerOptions, getDocument, PageViewport } from
 
 
 @customElement('pdf-viewer')
-class PdfEditor extends LitElement {
+class PdfViewer extends LitElement {
   static styles = css`
   :host {
     display: block; 

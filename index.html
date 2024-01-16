@@ -11,34 +11,41 @@
     <script type="module" src="/src/object-entry.ts"></script>
     <script type="module" src="/src/my-timer.ts"></script>
     <style>
-      body {
+      body, * {
         margin: 0;
         padding: 0;
+      }
 
+      main {
         display: flex;
       }
     </style>
   </head>
   <body>
     <!-- <my-timer duration="300"></my-timer> -->
-    <pop-editor 
-      id="one"
-      url="https://raw.githubusercontent.com/vinodnimbalkar/svelte-pdf/369db2f9edbf5ab8c87184193e1404340729bb3a/public/sample.pdf"
-    ></pop-editor>
+    <main>
+      <pop-editor 
+        id="one"
+        url="https://raw.githubusercontent.com/vinodnimbalkar/svelte-pdf/369db2f9edbf5ab8c87184193e1404340729bb3a/public/sample.pdf"
+      ></pop-editor>
+    </main>
+
+    <object-entry></object-entry>
   </body>
     
     
   <script>
     document.querySelector('#one').addEventListener('modified', (event) => {
       const result = document.querySelector("#result");
+      const main = document.querySelector('main');
       if (result) {
-        document.body.removeChild(result);
+        main.removeChild(result);
       }
 
       const popEditor = document.createElement('pdf-viewer');
       popEditor.setAttribute("id", "result");
       popEditor.setAttribute("data", event.detail.data);
-      document.body.appendChild(popEditor)
+      main.appendChild(popEditor)
     })
   </script>
 </html>
