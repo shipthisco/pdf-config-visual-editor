@@ -146,12 +146,9 @@ class PopEditor extends LitElement {
       })
   };
 
-  getCoordinates() {
-    const pos = {
-      x: this.position.x,
-      y: this.position.y,
-    }
-    if (this.viewport?.viewBox?.length > 0) {
+  getCoordinates(pos: {x: number, y: number}) {
+    console.log(pos)
+    if (this.viewport && this.viewport?.viewBox?.length > 0) {
       const [x, y, width, height] = this.viewport?.viewBox;
       pos.y = (height - ((pos.y * height) / this.viewport?.height)) - 10;
       pos.x = (pos.x * width) / this.viewport?.width;
@@ -166,19 +163,21 @@ class PopEditor extends LitElement {
     const pdfDoc = await PDFDocument.load(existingPdfBytes);
     const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
     
-    const pos = this.getCoordinates();
     const pages = pdfDoc.getPages();
     const firstPage = pages[0];
     const { width, height } = firstPage.getSize()
-
-    firstPage.drawText('This text was added with JavaScript!', {
-      x: pos.x,
-      y: pos.y,
-      size: 11,
-      font: helveticaFont,
-      color: rgb(0.95, 0.1, 0.1),
-      // rotate: degrees(-45),
-    })
+    
+    for (const field of this.fields) {
+      const pos = this.getCoordinates(JSON.parse(JSON.stringify(this.positions[field])));
+      firstPage.drawText('This text was added with JavaScript!', {
+        x: pos.x,
+        y: pos.y,
+        size: 11,
+        font: helveticaFont,
+        color: rgb(0.95, 0.1, 0.1),
+        // rotate: degrees(-45),
+      })
+    }
   
     const pdfBytes = await pdfDoc.saveAsBase64()
     return pdfBytes;
