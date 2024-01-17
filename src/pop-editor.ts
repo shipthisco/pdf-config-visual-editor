@@ -18,9 +18,8 @@ class PopEditor extends LitElement {
     position: absolute;
     /* width: 30px;
     height: 30px; */
-    padding-left: 0.25rem;
-    border-top: 1px solid #29e;
-    border-left: 1px solid #29e;
+    padding: 0.25rem;
+    border: 1px solid #29e;
     color: #29e;
   }
 
@@ -163,7 +162,7 @@ class PopEditor extends LitElement {
     interact(`.${className}`).draggable({
       listeners: {
         start: (event) => {
-          console.log(event.type, event.target)
+          // console.log(event.type, event.target)
         },
         move: (event) => {
           this.positions[className].x += event.dx
@@ -174,7 +173,13 @@ class PopEditor extends LitElement {
         },
         end: (event) => {
           const pos = this.getCoordinates(JSON.parse(JSON.stringify(this.positions[className])));
-          this.configNodes[className]['position'] = pos;
+          if (className.includes('-copy')) {
+            const originalNode = className.replace(/-copy\d/,'');
+            this.configNodes[originalNode].positions[className] = pos; 
+            console.log(originalNode);
+          } else {
+            this.configNodes[className]['position'] = pos;
+          }          
         }
       }
     })
@@ -226,14 +231,28 @@ class PopEditor extends LitElement {
     
     for (const field of this.fields) {
       // const pos = this.getCoordinates(JSON.parse(JSON.stringify(this.positions[field])));
-      firstPage.drawText('This text was added with JavaScript!', {
-        x: this.configNodes[field].position.x,
-        y: this.configNodes[field].position.y,
-        size: this.configNodes[field].fontSize,
-        font: helveticaFont,
-        color: rgb(0.95, 0.1, 0.1),
-        // rotate: degrees(-45),
-      })
+      try {
+        if (this.configNodes[field]?.type == 'multiple') {
+          for (const position of Object.values(this.configNodes[field].positions)) {
+            firstPage.drawText('This text was added with JavaScript!', {
+              x: position?.x,
+              y: position?.y,
+              size: this.configNodes[field].fontSize,
+              font: helveticaFont,
+              color: rgb(0.95, 0.1, 0.1),
+              // rotate: degrees(-45),
+            })
+          }
+        }
+        firstPage.drawText('This text was added with JavaScript!', {
+          x: this.configNodes[field].position.x,
+          y: this.configNodes[field].position.y,
+          size: this.configNodes[field].fontSize,
+          font: helveticaFont,
+          color: rgb(0.95, 0.1, 0.1),
+          // rotate: degrees(-45),
+        })
+      } catch (e) {}
     }
   
     const pdfBytes = await pdfDoc.saveAsBase64()
@@ -267,8 +286,20 @@ class PopEditor extends LitElement {
 
   private _generateConfig(e: Event) {
     const nodes = []
-    for (const field of this.fields) {
-      nodes.push(this.configNodes[field])
+    for (const node of Object.values<any>(this.configNodes)) {
+      try {
+        if (node.type == "multiple") {
+          const newNode = JSON.parse(JSON.stringify(node));
+          delete newNode.positions;
+          delete newNode.copy;
+          newNode.positions = Object.values<{x: number, y: number}[]>(node.positions).map((position) => position)
+          newNode.positions.push(JSON.parse(JSON.stringify(node.position)));
+          delete newNode.position
+          nodes.push(newNode);
+        } else {
+          nodes.push(node);
+        }
+      } catch (e) {}
     }
     const options = {
       detail: {nodes},
@@ -337,13 +368,41 @@ class PopEditor extends LitElement {
     action.style['display'] =  "block"
   }
 
+  _multiPositions(e: PointerEvent){
+    e.preventDefault();
+    e.stopPropagation();
+    
+    
+    if (!this.selectedConfigNode?.copy) {
+      this.selectedConfigNode.copy = 1;
+    } else {
+      this.selectedConfigNode.copy++;
+    }
+
+    const newFieldKey = this.selectedConfigNode.key + '-copy' + this.selectedConfigNode.copy;
+    this.selectedConfigNode.type = 'multiple';
+    this.positions[newFieldKey] = JSON.parse(JSON.stringify(this.position));
+    this.fields.push(newFieldKey);
+    this.selectedConfigNode.positions = {};
+    this.selectedConfigNode.positions[newFieldKey] = (this.selectedConfigNode.position);
+    
+    // console.log('multi positions', this.selectedConfigNode);
+    // console.log('new duplicate field added', this.configNodes);
+
+    this.dragField(newFieldKey);
+    this.requestUpdate();
+    if(!this.shadowRoot) return;
+    const menu = this.shadowRoot.querySelector<HTMLElement>('.context-menu');
+    if (!menu) return;
+    menu.style['display'] = "none";
+  }
+
   _set(e: Event) {
     console.log(e)
     if (!this.shadowRoot) return;
     const input = this.shadowRoot.querySelector<HTMLInputElement>('.context-menu .action input');
     if (!input) return;
     this.selectedConfigNode['fontSize'] = +input.value;
-
     const menu = this.shadowRoot.querySelector<HTMLElement>('.context-menu');
     if (!menu) return;
     menu.style['display'] = "none";
@@ -359,7 +418,7 @@ class PopEditor extends LitElement {
           <button class="menu-item" @click="${this._contextSetFont}">Set Font Size</button>
           <button class="menu-item">Set Remove</button>
           <button class="menu-item">Set Color</button>
-          <button class="menu-item">Set Multi</button>
+          <button class="menu-item" @click="${this._multiPositions}">Set Multi</button>
           <button class="menu-item">Set more attributes</button>
         </div>
 
