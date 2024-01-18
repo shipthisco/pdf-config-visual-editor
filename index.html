@@ -7,11 +7,50 @@
     <title>Vite + Lit + TS</title>
     <link rel="stylesheet" href="./src/index.css" />
     <script type="module" src="/src/pop-editor.ts"></script>
+    <script type="module" src="/src/pdf-viewer.ts"></script>
+    <script type="module" src="/src/object-entry.ts"></script>
     <script type="module" src="/src/my-timer.ts"></script>
+    <style>
+      body, * {
+        margin: 0;
+        padding: 0;
+      }
 
+      main {
+        display: flex;
+      }
+    </style>
   </head>
   <body>
-    <my-timer duration="300"></my-timer>
-    <pop-editor url="https://raw.githubusercontent.com/vinodnimbalkar/svelte-pdf/369db2f9edbf5ab8c87184193e1404340729bb3a/public/sample.pdf"></pop-editor>
+    <!-- <my-timer duration="300"></my-timer> -->
+    <main>
+      <pop-editor 
+        id="one"
+        url="https://raw.githubusercontent.com/vinodnimbalkar/svelte-pdf/369db2f9edbf5ab8c87184193e1404340729bb3a/public/sample.pdf"
+        fields='["hello","world"]'
+      ></pop-editor>
+    </main>
+
+    <object-entry></object-entry>
   </body>
+    
+    
+  <script>
+    document.querySelector('#one').addEventListener('modified', (event) => {
+      const result = document.querySelector("#result");
+      const main = document.querySelector('main');
+      if (result) {
+        main.removeChild(result);
+      }
+
+      const popEditor = document.createElement('pdf-viewer');
+      popEditor.setAttribute("id", "result");
+      popEditor.setAttribute("data", event.detail.data);
+      main.appendChild(popEditor)
+    })
+
+    document.querySelector('#one').addEventListener('pdfConfig', (event) => {
+      console.log(event.detail)
+    });
+  </script>
 </html>

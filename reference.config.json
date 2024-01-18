@@ -1,0 +1,929 @@
+{
+  "nodes": [
+    {
+      "key": "awb",
+      "type": "multiple",
+      "fontSize": 16,
+      "color": {
+        "r": 1,
+        "g": 0,
+        "b": 0
+      },
+      "positions": [
+        {
+          "x": 35,
+          "y": 20
+        },
+        {
+          "x": 477,
+          "y": 20
+        },
+        {
+          "x": 477,
+          "y": 756
+        }
+      ]
+    },
+    {
+      "key": "issued_by",
+      "type": "text",
+      "fontSize": 9,
+      "fontFamily": "courier",
+      "position": {
+        "x": 389,
+        "y": 31
+      }
+    },
+    {
+      "key": "issued_by",
+      "type": "bar_code",
+      "fontSize": 9,
+      "fontFamily": "courier",
+      "position": {
+        "x": 389,
+        "y": 31
+      }
+    },
+    {
+      "key": "shipper_name",
+      "type": "text",
+      "fontSize": 9,
+      "fontFamily": "courier",
+      "position": {
+        "x": 57,
+        "y": 42
+      },
+      "width": 200
+    },
+    {
+      "key": "shipper_address",
+      "type": "text",
+      "fontSize": 9,
+      "fontFamily": "courier",
+      "position": {
+        "x": 57,
+        "y": 62
+      },
+      "width": 270
+    },
+    {
+      "key": "consignee_name",
+      "type": "text",
+      "fontSize": 9,
+      "fontFamily": "courier",
+      "position": {
+        "x": 57,
+        "y": 123
+      },
+      "width": 270,
+      "height": 100
+    },
+    {
+      "key": "consignee_address",
+      "type": "text",
+      "fontSize": 9,
+      "fontFamily": "courier",
+      "position": {
+        "x": 57,
+        "y": 180
+      },
+      "width": 270,
+      "height": 100
+    },
+    {
+      "key": "carrier_agent_name",
+      "type": "text",
+      "fontSize": 9,
+      "fontFamily": "courier",
+      "position": {
+        "x": 57,
+        "y": 180
+      }
+    },
+    {
+      "key": "carrier_agent_address",
+      "type": "text",
+      "fontSize": 9,
+      "fontFamily": "courier",
+      "lineHeight": 5,
+      "position": {
+        "x": 57,
+        "y": 195
+      }
+    },
+    {
+      "key": "accounting_information",
+      "type": "text",
+      "fontSize": 9,
+      "fontFamily": "courier",
+      "position": {
+        "x": 330,
+        "y": 200
+      }
+    },
+    {
+      "key": "iata_code",
+      "type": "text",
+      "fontSize": 9,
+      "fontFamily": "courier",
+      "position": {
+        "x": 57,
+        "y": 475
+      }
+    },
+    {
+      "key": "account_number",
+      "type": "text",
+      "fontSize": 9,
+      "fontFamily": "courier",
+      "position": {
+        "x": 184,
+        "y": 475
+      }
+    },
+    {
+      "key": "origin_airport",
+      "type": "text",
+      "fontSize": 9,
+      "fontFamily": "courier",
+      "position": {
+        "x": 57,
+        "y": 256
+      }
+    },
+    {
+      "key": "reference_number",
+      "type": "text",
+      "fontSize": 9,
+      "fontFamily": "courier",
+      "position": {
+        "x": 315,
+        "y": 521
+      }
+    },
+    {
+      "key": "first_to",
+      "type": "text",
+      "fontSize": 9,
+      "fontFamily": "courier",
+      "position": {
+        "x": 57,
+        "y": 280
+      }
+    },
+    {
+      "key": "first_carrier",
+      "type": "text",
+      "fontSize": 9,
+      "fontFamily": "courier",
+      "position": {
+        "x": 83,
+        "y": 280
+      }
+    },
+    {
+      "key": "second_to",
+      "type": "text",
+      "fontSize": 9,
+      "fontFamily": "courier",
+      "position": {
+        "x": 203,
+        "y": 280
+      }
+    },
+    {
+      "key": "second_carrier",
+      "type": "text",
+      "fontSize": 9,
+      "fontFamily": "courier",
+      "position": {
+        "x": 235,
+        "y": 280
+      }
+    },
+    {
+      "key": "third_to",
+      "type": "text",
+      "fontSize": 9,
+      "fontFamily": "courier",
+      "position": {
+        "x": 267,
+        "y": 280
+      }
+    },
+    {
+      "key": "third_carrier",
+      "type": "text",
+      "fontSize": 9,
+      "fontFamily": "courier",
+      "position": {
+        "x": 299,
+        "y": 280
+      }
+    },
+    {
+      "key": "currency",
+      "type": "text",
+      "fontSize": 9,
+      "fontFamily": "courier",
+      "position": {
+        "x": 335,
+        "y": 280
+      }
+    },
+    {
+      "key": "chgs_code",
+      "type": "text",
+      "fontSize": 9,
+      "fontFamily": "courier",
+      "position": {
+        "x": 356,
+        "y": 280
+      }
+    },
+    {
+      "key": "val_ppd",
+      "type": "text",
+      "fontSize": 9,
+      "fontFamily": "courier",
+      "position": {
+        "x": 372,
+        "y": 280
+      }
+    },
+    {
+      "key": "val_col",
+      "type": "text",
+      "fontSize": 9,
+      "fontFamily": "courier",
+      "position": {
+        "x": 385,
+        "y": 280
+      }
+    },
+    {
+      "key": "other_ppd",
+      "type": "text",
+      "fontSize": 9,
+      "fontFamily": "courier",
+      "position": {
+        "x": 405,
+        "y": 280
+      }
+    },
+    {
+      "key": "other_col",
+      "type": "text",
+      "fontSize": 9,
+      "fontFamily": "courier",
+      "position": {
+        "x": 415,
+        "y": 280
+      }
+    },
+    {
+      "key": "value_for_carriage",
+      "type": "text",
+      "fontSize": 9,
+      "fontFamily": "courier",
+      "position": {
+        "x": 438,
+        "y": 280
+      }
+    },
+    {
+      "key": "value_for_customs",
+      "type": "text",
+      "fontSize": 9,
+      "fontFamily": "courier",
+      "position": {
+        "x": 525,
+        "y": 280
+      }
+    },
+    {
+      "key": "destination_airport_city",
+      "type": "text",
+      "fontSize": 9,
+      "fontFamily": "courier",
+      "position": {
+        "x": 57,
+        "y": 310
+      }
+    },
+    {
+      "key": "handling_information",
+      "type": "text",
+      "fontSize": 8,
+      "fontFamily": "courier",
+      "position": {
+        "x": 57,
+        "y": 338
+      },
+      "width": 450
+    },
+    {
+      "key": "first_flight_number",
+      "type": "text",
+      "fontSize": 8,
+      "fontFamily": "courier",
+      "position": {
+        "x": 184,
+        "y": 310
+      }
+    },
+    {
+      "key": "first_flight_date",
+      "type": "text",
+      "fontSize": 8,
+      "fontFamily": "courier",
+      "position": {
+        "x": 184,
+        "y": 318
+      }
+    },
+    {
+      "key": "second_flight_number",
+      "type": "text",
+      "fontSize": 9,
+      "fontFamily": "courier",
+      "position": {
+        "x": 262,
+        "y": 310
+      }
+    },
+    {
+      "key": "second_flight_date",
+      "type": "text",
+      "fontSize": 8,
+      "fontFamily": "courier",
+      "position": {
+        "x": 262,
+        "y": 318
+      }
+    },
+    {
+      "key": "other_shipping_info",
+      "type": "text",
+      "fontSize": 8,
+      "fontFamily": "courier",
+      "position": {
+        "x": 57,
+        "y": 835
+      },
+      "width": 380
+    },
+    {
+      "key": "notify_party_name",
+      "type": "text",
+      "fontSize": 9,
+      "fontFamily": "courier",
+      "position": {
+        "x": 57,
+        "y": 490
+      }
+    },
+    {
+      "key": "notify_party_address",
+      "type": "text",
+      "fontSize": 9,
+      "fontFamily": "courier",
+      "position": {
+        "x": 57,
+        "y": 510
+      }
+    },
+    {
+      "key": "total_pieces",
+      "type": "text",
+      "fontSize": 9,
+      "fontFamily": "courier",
+      "position": {
+        "x": 53,
+        "y": 1111
+      }
+    },
+    {
+      "key": "total_gross_weight",
+      "type": "text",
+      "fontSize": 9,
+      "fontFamily": "courier",
+      "position": {
+        "x": 80,
+        "y": 1111
+      }
+    },
+    {
+      "key": "unit",
+      "type": "text",
+      "fontSize": 9,
+      "fontFamily": "courier",
+      "position": {
+        "x": 109,
+        "y": 1111
+      }
+    },
+    {
+      "key": "final_total",
+      "type": "text",
+      "fontSize": 9,
+      "fontFamily": "courier",
+      "position": {
+        "x": 345,
+        "y": 1109
+      }
+    },
+    {
+      "key": "weight_charge_prepaid",
+      "type": "text",
+      "fontSize": 9,
+      "fontFamily": "courier",
+      "position": {
+        "x": 53,
+        "y": 1177
+      }
+    },
+    {
+      "key": "weight_charge_collect",
+      "type": "text",
+      "fontSize": 9,
+      "fontFamily": "courier",
+      "position": {
+        "x": 150,
+        "y": 1177
+      }
+    },
+    {
+      "key": "valuation_charge_prepaid",
+      "type": "text",
+      "fontSize": 9,
+      "fontFamily": "courier",
+      "position": {
+        "x": 53,
+        "y": 1225
+      }
+    },
+    {
+      "key": "valuation_charge_collect",
+      "type": "text",
+      "fontSize": 9,
+      "fontFamily": "courier",
+      "position": {
+        "x": 150,
+        "y": 1225
+      }
+    },
+    {
+      "key": "tax_prepaid",
+      "type": "text",
+      "fontSize": 9,
+      "fontFamily": "courier",
+      "position": {
+        "x": 53,
+        "y": 1275
+      }
+    },
+    {
+      "key": "tax_collect",
+      "type": "text",
+      "fontSize": 9,
+      "fontFamily": "courier",
+      "position": {
+        "x": 150,
+        "y": 1275
+      }
+    },
+    {
+      "key": "charge_due_agent_prepaid",
+      "type": "text",
+      "fontSize": 9,
+      "fontFamily": "courier",
+      "position": {
+        "x": 53,
+        "y": 1329
+      }
+    },
+    {
+      "key": "sci",
+      "type": "text",
+      "fontSize": 9,
+      "fontFamily": "courier",
+      "position": {
+        "x": 545,
+        "y": 720
+      }
+    },
+    {
+      "key": "charge_due_agent_collect",
+      "type": "text",
+      "fontSize": 9,
+      "fontFamily": "courier",
+      "position": {
+        "x": 150,
+        "y": 1329
+      }
+    },
+    {
+      "key": "charge_due_carrier_prepaid",
+      "type": "text",
+      "fontSize": 9,
+      "fontFamily": "courier",
+      "position": {
+        "x": 53,
+        "y": 1379
+      }
+    },
+    {
+      "key": "charge_due_carrier_collect",
+      "type": "text",
+      "fontSize": 9,
+      "fontFamily": "courier",
+      "position": {
+        "x": 150,
+        "y": 1379
+      }
+    },
+    {
+      "key": "other_charges_name",
+      "type": "text",
+      "fontSize": 9,
+      "fontFamily": "courier",
+      "position": {
+        "x": 255,
+        "y": 1155
+      }
+    },
+    {
+      "key": "other_charges_value",
+      "type": "text",
+      "fontSize": 9,
+      "fontFamily": "courier",
+      "position": {
+        "x": 255,
+        "y": 1155
+      },
+      "width": 300
+    },
+    {
+      "key": "total_prepaid",
+      "type": "text",
+      "fontSize": 9,
+      "fontFamily": "courier",
+      "position": {
+        "x": 53,
+        "y": 1453
+      }
+    },
+    {
+      "key": "total_collect",
+      "type": "text",
+      "fontSize": 9,
+      "fontFamily": "courier",
+      "position": {
+        "x": 150,
+        "y": 1453
+      }
+    },
+    {
+      "key": "shipper_name",
+      "type": "text",
+      "fontSize": 9,
+      "fontFamily": "courier",
+      "position": {
+        "x": 365,
+        "y": 1395
+      }
+    },
+    {
+      "key": "carrier_signature_date",
+      "type": "text",
+      "fontSize": 9,
+      "fontFamily": "courier",
+      "position": {
+        "x": 275,
+        "y": 1473
+      }
+    },
+    {
+      "key": "carrier_signature_place",
+      "type": "text",
+      "fontSize": 9,
+      "fontFamily": "courier",
+      "position": {
+        "x": 365,
+        "y": 1473
+      }
+    },
+    {
+      "key": "carrier_signature_name",
+      "type": "text",
+      "fontSize": 9,
+      "fontFamily": "courier",
+      "position": {
+        "x": 435,
+        "y": 1473
+      }
+    },
+    {
+      "key": "currency_conversion_rate",
+      "type": "text",
+      "fontSize": 7,
+      "fontFamily": "courier",
+      "position": {
+        "x": 53,
+        "y": 1495
+      }
+    },
+    {
+      "key": "charges_destination_currency",
+      "type": "text",
+      "fontSize": 7,
+      "fontFamily": "courier",
+      "position": {
+        "x": 150,
+        "y": 1495
+      }
+    },
+    {
+      "key": "charges_destination",
+      "type": "text",
+      "fontSize": 7,
+      "fontFamily": "courier",
+      "position": {
+        "x": 150,
+        "y": 1529
+      }
+    },
+    {
+      "key": "total_charges",
+      "type": "text",
+      "fontSize": 7,
+      "fontFamily": "courier",
+      "position": {
+        "x": 245,
+        "y": 1529
+      }
+    },
+    {
+      "key": "cers_number",
+      "type": "text",
+      "fontSize": 7,
+      "fontFamily": "courier",
+      "position": {
+        "x": 425,
+        "y": 1055
+      }
+    },
+    {
+      "key": "aggregated_load",
+      "type": "sub",
+      "position": {
+        "pad_x": 0,
+        "pad_y": 40,
+        "x": null,
+        "y": null
+      },
+      "maxPerPage": 2,
+      "nodes": [
+        {
+          "key": "gross_weight",
+          "type": "text",
+          "fontSize": 7,
+          "fontFamily": "courier",
+          "position": {
+            "x": 84,
+            "y": 400
+          }
+        },
+        {
+          "key": "pieces",
+          "type": "text",
+          "fontSize": 7,
+          "fontFamily": "courier",
+          "position": {
+            "x": 57,
+            "y": 400
+          }
+        },
+        {
+          "key": "weight_unit",
+          "type": "text",
+          "fontSize": 7,
+          "fontFamily": "courier",
+          "position": {
+            "x": 110,
+            "y": 400
+          }
+        },
+        {
+          "key": "rate_class",
+          "type": "text",
+          "fontSize": 7,
+          "fontFamily": "courier",
+          "position": {
+            "x": 124,
+            "y": 400
+          }
+        },
+        {
+          "key": "chargeable_weight",
+          "type": "text",
+          "fontSize": 7,
+          "fontFamily": "courier",
+          "position": {
+            "x": 160,
+            "y": 400
+          }
+        },
+        {
+          "key": "rate",
+          "type": "text",
+          "fontSize": 7,
+          "fontFamily": "courier",
+          "position": {
+            "x": 248,
+            "y": 400
+          }
+        },
+        {
+          "key": "rate_total",
+          "type": "text",
+          "fontSize": 7,
+          "fontFamily": "courier",
+          "position": {
+            "x": 375,
+            "y": 400
+          }
+        },
+        {
+          "key": "description",
+          "type": "text",
+          "fontSize": 7,
+          "fontFamily": "courier",
+          "position": {
+            "x": 450,
+            "y": 400
+          },
+          "width": 160
+        }
+      ]
+    }
+  ],
+  "otherConfigs": {
+    "enableDuplicate": true,
+    "copies": [
+      {
+        "copyName": "original_1",
+        "nodes": [
+          {
+            "value": "Original 1 (for Issuing Carrier)",
+            "type": "static",
+            "fontSize": 12,
+            "color": {
+              "r": 0,
+              "g": 0,
+              "b": 0
+            },
+            "position": {
+              "x": 374,
+              "y": 776
+            }
+          }
+        ]
+      },
+      {
+        "copyName": "original_2",
+        "nodes": [
+          {
+            "value": "Original 2 (for Consignee)",
+            "type": "static",
+            "fontSize": 12,
+            "color": {
+              "r": 0,
+              "g": 0,
+              "b": 0
+            },
+            "position": {
+              "x": 374,
+              "y": 776
+            }
+          }
+        ]
+      },
+      {
+        "copyName": "original_3",
+        "nodes": [
+          {
+            "value": "Original 3 (for Shipper)",
+            "type": "static",
+            "fontSize": 12,
+            "color": {
+              "r": 0,
+              "g": 0,
+              "b": 0
+            },
+            "position": {
+              "x": 374,
+              "y": 776
+            }
+          }
+        ]
+      },
+      {
+        "copyName": "copy_4",
+        "nodes": [
+          {
+            "value": "Copy 4 (Delivery Receipt)",
+            "type": "static",
+            "fontSize": 12,
+            "color": {
+              "r": 0,
+              "g": 0,
+              "b": 0
+            },
+            "position": {
+              "x": 374,
+              "y": 776
+            }
+          }
+        ]
+      },
+      {
+        "copyName": "copy_5",
+        "nodes": [
+          {
+            "value": "Copy 5 (Extra Copy)",
+            "type": "static",
+            "fontSize": 12,
+            "color": {
+              "r": 0,
+              "g": 0,
+              "b": 0
+            },
+            "position": {
+              "x": 374,
+              "y": 776
+            }
+          }
+        ]
+      },
+      {
+        "copyName": "copy_6",
+        "nodes": [
+          {
+            "value": "Copy 6 (Extra Copy)",
+            "type": "static",
+            "fontSize": 12,
+            "color": {
+              "r": 0,
+              "g": 0,
+              "b": 0
+            },
+            "position": {
+              "x": 374,
+              "y": 776
+            }
+          }
+        ]
+      },
+      {
+        "copyName": "copy_7",
+        "nodes": [
+          {
+            "value": "Copy 7 (Extra Copy)",
+            "type": "static",
+            "fontSize": 12,
+            "color": {
+              "r": 0,
+              "g": 0,
+              "b": 0
+            },
+            "position": {
+              "x": 374,
+              "y": 776
+            }
+          }
+        ]
+      },
+      {
+        "copyName": "copy_8",
+        "nodes": [
+          {
+            "value": "Copy 8 (for Agent)",
+            "type": "static",
+            "fontSize": 12,
+            "color": {
+              "r": 0,
+              "g": 0,
+              "b": 0
+            },
+            "position": {
+              "x": 374,
+              "y": 776
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
