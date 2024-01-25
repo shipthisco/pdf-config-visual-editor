@@ -3,7 +3,7 @@ import interact from 'interactjs'
 import { customElement, property, state } from "lit/decorators.js";
 import { PDFDocumentProxy, GlobalWorkerOptions, getDocument, PageViewport } from "pdfjs-dist";
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
-
+import './index.css'
 
 @customElement('pop-editor')
 class PopEditor extends LitElement {
@@ -415,13 +415,13 @@ class PopEditor extends LitElement {
       <div class="context-menu">
         <div class="menu-items">
           <button @click=${this._closeContextMenu}> Close </button>
-          <button class="menu-item" @click="${this._contextSetFont}">Set Font Size</button>
+          <button class="menu-item text-red-500" @click="${this._contextSetFont}">Set Font Size</button>
           <button class="menu-item">Set Remove</button>
           <button class="menu-item">Set Color</button>
           <button class="menu-item" @click="${this._multiPositions}">Set Multi</button>
           <button class="menu-item">Set more attributes</button>
         </div>
-
+ 
         <div class="action">
           <input >
           <button @click="${this._set}">Set</button>
