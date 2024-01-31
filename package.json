@@ -1,7 +1,7 @@
 {
-  "name": "shipthis-pdfx",
+  "name": "pdfx",
   "private": false,
-  "version": "1.0.1",
+  "version": "1.0.6",
   "type": "module",
   "main": "dist/pdfx.js",
   "description": "create visually compelling PDFs with precise control over element placement and seamless integration with JSON data.",
@@ -27,5 +27,5 @@
     "vite-plugin-top-level-await": "^1.4.1",
     "vite-plugin-tsconfig": "^1.0.4"
   },
-  "author": "hrishika"
+  "author": "saxenahrishika<hrishika@shipthis.co>"
 }
