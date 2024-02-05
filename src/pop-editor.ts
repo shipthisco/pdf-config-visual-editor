@@ -10,7 +10,19 @@ export type Position = {
   y: number,
 }
 
+type ConfigNode = {
+  key: string;
+  type: any;
+  fontSize: number;
+  fontFamily: string;
+  position: Position;
+  positions?: Record<string, Position>;
+  copy?: number;
+};
+
+
 @customElement('pop-editor')
+
 export class PopEditor extends LitElement {
   static styles = css`
   :host {
@@ -26,6 +38,9 @@ export class PopEditor extends LitElement {
     padding: 0.25rem;
     border: 1px solid #29e;
     color: #29e;
+  }
+  .pdf-container {
+    position: relative; 
   }
 
   #the-canvas {
@@ -61,6 +76,9 @@ export class PopEditor extends LitElement {
   .context-menu .action {
     display: none;
   }
+  .dragging {
+    position: absolute;
+  }  
   `
 
   @property() data: any;
@@ -71,6 +89,7 @@ export class PopEditor extends LitElement {
   @property({type: Number}) rotation = 0;
   @property({type: Number}) pageNum = 1; //must be number
   @property({type: Number}) totalPage = 0;
+  @state() pdfBounds: { left: number; top: number; right: number; bottom: number; } | null = null;
 
   hostClientHeight: number | undefined;
   hostClientWidth: number | undefined;
@@ -78,7 +97,7 @@ export class PopEditor extends LitElement {
   configNodes: any = {};
   selectedConfigNode: any = {};
   selectedAction: string = '';
-
+  
   canvas: any;
   page_num = 0;
   pageCount = 0;
@@ -153,10 +172,25 @@ export class PopEditor extends LitElement {
 
       // Wait for rendering to finish
       renderTask.promise.then(() => {
-        console.log('Page rendered')
-        
+        console.log('Page rendered');
+        const pdfContainerRect = this.shadowRoot?.querySelector('.pdf-container')?.getBoundingClientRect();
+    if (pdfContainerRect) {
+      this.position.x = pdfContainerRect.left + window.scrollX;
+      this.position.y = pdfContainerRect.top + window.scrollY;
+    }
+
+    const canvasRect = this.canvas.getBoundingClientRect();
+    this.pdfBounds = {
+      left: canvasRect.left + window.scrollX,
+      top: canvasRect.top + window.scrollY,
+      right: canvasRect.left + window.scrollX + canvasRect.width,
+      bottom: canvasRect.top + window.scrollY + canvasRect.height
+    };
+
+
         this.fields.forEach((field) => {
-          this.positions[field] = JSON.parse(JSON.stringify(this.position));
+          //this.positions[field] = JSON.parse(JSON.stringify(this.position));
+          this.positions[field] = {...this.position};
           this.dragField(field)
         });
       });
@@ -165,27 +199,38 @@ export class PopEditor extends LitElement {
 
   dragField(className: string) {
     interact(`.${className}`).draggable({
+      modifiers: [
+        interact.modifiers.restrictRect({
+          restriction: this.pdfBounds || { left: 0, top: 0, right: 0, bottom: 0 },
+          endOnly: true
+        })
+      ],
       listeners: {
-        // start: (event) => {
-        //   // console.log(event.type, event.target)
-        // },
+        start: (event) => {
+          event.target.classList.add('dragging');
+        },
         move: (event) => {
-          this.positions[className].x += event.dx
-          this.positions[className].y += event.dy
-    
-          event.target.style.transform =
-            `translate(${this.positions[className].x}px, ${this.positions[className].y}px)`
+          const target = event.target;
+          let x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
+          let y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
+
+          target.style.transform = `translate(${x}px, ${y}px)`;
+          target.setAttribute('data-x', x);
+          target.setAttribute('data-y', y);
         },
         end: (event) => {
-          event
-          const pos: Position = this.getCoordinates(JSON.parse(JSON.stringify(this.positions[className])));
-          if (className.includes('-copy')) {
-            const originalNode = className.replace(/-copy\d/,'');
-            this.configNodes[originalNode].positions[className] = pos; 
-            console.log(originalNode);
-          } else {
-            this.configNodes[className]['position'] = pos;
-          }          
+          event.target.classList.remove('dragging');
+          const x = parseFloat(event.target.getAttribute('data-x')) || 0;
+          const y = parseFloat(event.target.getAttribute('data-y')) || 0;
+          //const pos = this.getCoordinates({ x, y });
+          const {x: calculatedX, y: calculatedY} = this.getCoordinates({ x, y });
+          const fieldName = event.target.classList[1];
+
+          if (this.configNodes[fieldName]) {
+            this.configNodes[fieldName].position.x = calculatedX;
+            this.configNodes[fieldName].position.y = calculatedY;
+          }
+          console.log('Updated position', this.configNodes[fieldName].position);
         }
       }
     })
@@ -214,17 +259,21 @@ export class PopEditor extends LitElement {
       })
   };
 
-  getCoordinates(pos: {x: number, y: number}) {
-    console.log(pos)
-    if (this.viewport && this.viewport?.viewBox?.length > 0) {
-      const [x, y, width, height] = this.viewport?.viewBox;
-      x
-      y
-      pos.y = (height - ((pos.y * height) / this.viewport?.height)) - 10;
-      pos.x = (pos.x * width) / this.viewport?.width;
+  getCoordinates(pos: { x: number, y: number }) {
+    if (this.viewport && this.viewport.viewBox.length > 0) {
+        const [, , viewBoxWidth, viewBoxHeight] = this.viewport.viewBox;
+        const xRatio = viewBoxWidth / this.canvas.width;
+        const yRatio = viewBoxHeight / this.canvas.height;
+        pos.x = (pos.x - this.canvas.offsetLeft) * xRatio;
+        pos.y = (this.canvas.height - (pos.y - this.canvas.offsetTop)) * yRatio;
+        //console.log("ultha value kya yeh iska???", viewBoxHeight);
+        pos.y = viewBoxHeight - pos.y;
     }
-    return pos
+    return pos;
   }
+
+  
+
 
   async modifyPdf() {
     const url = this.url;
@@ -235,10 +284,8 @@ export class PopEditor extends LitElement {
     
     const pages = pdfDoc.getPages();
     const firstPage = pages[0];
-    // const { width, height } = firstPage.getSize()
     
     for (const field of this.fields) {
-      // const pos = this.getCoordinates(JSON.parse(JSON.stringify(this.positions[field])));
       try {
         if (this.configNodes[field]?.type == 'multiple') {
           for (const position of Object.values<Position>(this.configNodes[field].positions)) {
@@ -318,6 +365,24 @@ export class PopEditor extends LitElement {
       composed: true
     };
     this.dispatchEvent(new CustomEvent('pdfConfig', options));
+  }
+
+  getConfiguration(): Record<string, ConfigNode> {
+    //can call this method from our external application
+    const configOutput: Record<string, ConfigNode> = {};
+    Object.keys(this.configNodes).forEach((key) => {
+      const node = this.configNodes[key];
+      const clonedNode: ConfigNode = JSON.parse(JSON.stringify(node));
+      if (clonedNode.type === 'multiple' && clonedNode.positions) {
+        clonedNode.positions = Object.entries(clonedNode.positions).reduce<Record<string, Position>>((acc, [k, v]) => {
+          acc[k] = { ...v };
+          return acc;
+        }, {});
+      }
+      
+      configOutput[key] = clonedNode;
+    });
+    return configOutput;
   }
 
   _dragBoxContextMenu(e: PointerEvent, field: string) {
@@ -440,14 +505,16 @@ export class PopEditor extends LitElement {
         </div>
       </div>
 
+      <div class="pdf-container" style="position: relative;">
       ${
         this.fields.map((field) => html`
-          <div class="draggable ${field}" @contextmenu=${{handleEvent: (e: PointerEvent) => this._dragBoxContextMenu(e, field)}}>
+          <div class="draggable ${field}" @contextmenu=${{handleEvent: (e:PointerEvent) => this._dragBoxContextMenu(e, field)}}>
           ${field}
           </div>
         `)
       }
       <canvas id="the-canvas"></canvas>
+      </div>
       <button @click="${this._download}">Download</button>
       <button @click="${this._display}">Display</button>
       <button @click="${this._generateConfig}">Generate Config</button>
